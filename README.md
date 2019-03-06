@@ -1,2 +1,2 @@
-# TDXTechnial
+# TDXTechnical
 TDX Technical Test
