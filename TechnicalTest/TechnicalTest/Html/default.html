@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE = edge" />
+
+    <title>TDX File Parser</title>
+    <script src="../Scripts/jquery-3.0.0.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+    <script src="../Scripts/jquery.dataTables.min.js"></script>
+    <script src="../Scripts/technicaltest.js"></script>
+
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+    <link href="../Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="../Content/App.css" rel="stylesheet" />
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="default.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="uploadfile.html">Upload File</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="items.html">Results</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="logs.html">Logs</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container" width="100%">
+
+    <form width="100%">
+        <br/>
+        
+            <h2 class="text-center">Load Inventory</h2>
+        <div class="input-group">
+            <span class="input-group-btn">
+                <span class="btn btn-primary" onclick="$(this).parent().find('input[type=file]').click();">Browse</span>
+                <input name="uploaded_file" onchange="$(this).parent().parent().find('.form-control').html($(this).val());" style="display: none;" type="file">
+            </span>
+            <span class="form-control" id="filepath"></span>
+            <button type="button" id="uploaded_file" class="btn btn-primary">Upload</button>
+        </div>
+
+    </form>
+    <br/>
+    <div class="card" style="width: 100%">
+        <div class="card-header" id="general">
+            <h4>Results</h4>
+        </div>
+        <div class="card-body">
+            <form>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Windows.Forms;
 
 namespace TechnicalTest
@@ -13,7 +14,7 @@ namespace TechnicalTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FileParser());
+            Application.Run(new FileParser(AppDomain.CurrentDomain.BaseDirectory, new AppSettingsReader()));
         }
     }
 }

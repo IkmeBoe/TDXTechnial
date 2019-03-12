@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest", "TechnicalT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTestUnitTests", "TechnicalTestUnitTests\TechnicalTestUnitTests.csproj", "{7876B7D4-5578-47B3-8E35-E6820471DB10}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0F87C19D-1CB4-4620-987D-73D9D9A5BD0D}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Desktop\EmbededSqlTest\EmbededSqlTest\ignoreerrors.eslint = ..\..\..\..\Desktop\EmbededSqlTest\EmbededSqlTest\ignoreerrors.eslint
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
