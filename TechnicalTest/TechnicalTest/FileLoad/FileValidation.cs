@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TechnicalTest.Enums;
@@ -19,7 +20,7 @@ namespace TechnicalTest.FileLoad
     {
         ILog _log;
         private string _connectionString;
-        DbHelper _dbHelper = new DbHelper();
+        
         public FileValidation()
         {
             _log = new Log.Log();
@@ -56,15 +57,17 @@ namespace TechnicalTest.FileLoad
 
                 var item = new Item();
                 Guid.TryParse(fields[0], out var lineGuid);
-                Enum.TryParse<PartType>(fields[2], true, out var itemPart);
+               
 
                 var validator = new ItemValidator();
                 item.PartId = lineGuid;
                 item.PartName = fields[1];
-                item.PartType = itemPart;
+                item.PartType = (PartType) Enum.Parse(typeof(PartType), fields[2]);
                 item.Quantity = int.Parse(fields[3]);
-                item.DateAdded = DateTime.Parse(fields[4]);
-                item.PartLength = double.Parse(fields[5]);
+                item.DateAdded = Convert.ToDateTime(DateTime.ParseExact(fields[5], "MM/dd/yyyy",
+                    CultureInfo.InvariantCulture).ToString("MM/dd/yyyy"));
+                
+                item.PartLength = double.Parse(fields[4]);
                     
                 var results = validator.Validate(item);
 

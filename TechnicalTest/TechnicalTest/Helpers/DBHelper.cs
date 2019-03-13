@@ -11,7 +11,16 @@ namespace TechnicalTest.Helpers
 {
     internal class DbHelper
     {
-        readonly string _connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        private readonly string _connectionString;
+        public DbHelper()
+        {
+            _connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        }
+
+        public DbHelper(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         internal List<T> GetDataFromDatabase<T>(string query)
         {

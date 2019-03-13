@@ -15,12 +15,32 @@ namespace TechnicalTest.Validators
         public ItemValidator()
         {
             
-            RuleFor(item => item.PartId).NotEmpty().NotNull().NotEqual(Guid.Empty);
-            RuleFor(item => item.PartName).NotEmpty().NotNull();
-            RuleFor(item => item.PartType).NotEmpty().NotEmpty().IsInEnum();
-            RuleFor(item => item.Quantity).NotEmpty().NotNull().NotEqual(0);
-            RuleFor(item => item.DateAdded).NotEmpty().NotNull().NotEqual(DateTime.MinValue);
-            RuleFor(item => item.PartLength).NotEmpty().NotNull();
+            RuleFor(item => item.PartId)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .NotNull()
+                .NotEqual(Guid.Empty);
+            RuleFor(item => item.PartName)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .NotNull();
+            RuleFor(item => item.PartType)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .IsInEnum();
+            RuleFor(item => item.Quantity)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .NotNull()
+                .NotEqual(0);
+            RuleFor(item => item.DateAdded)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .NotNull()
+                .NotEqual(DateTime.MinValue);
+            RuleFor(item => item.PartLength)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .NotNull();
 
         }
         

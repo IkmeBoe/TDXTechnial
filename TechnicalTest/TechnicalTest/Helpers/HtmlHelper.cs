@@ -43,9 +43,10 @@ namespace TechnicalTest.Helpers
             if (currentDocument.Body != null)
             {
                 currentDocument.Body.AppendChild(divContainer);
+                currentDocument.InvokeScript("Pagenation");
             }
 
-            currentDocument.InvokeScript("Pagenation");
+           
         }
 
         public void BuildItemTable(HtmlDocument currentDocument, List<Item> items)
@@ -70,13 +71,17 @@ namespace TechnicalTest.Helpers
             {
                 return;
             }
-            divContainer.AppendChild(htmlTable2);
-            if (currentDocument.Body != null)
-            {
-                currentDocument.Body.AppendChild(divContainer);
-            }
 
-            currentDocument.InvokeScript("Pagenation");
+            if (htmlTable2 != null)
+            {
+                divContainer.AppendChild(htmlTable2);
+                if (currentDocument.Body != null)
+                {
+                    currentDocument.Body.AppendChild(divContainer);
+                }
+
+                currentDocument.InvokeScript("Pagenation");
+            }
         }
 
         private HtmlElement BuildItemTableData(HtmlDocument currentDocument, List<Item> items)
@@ -298,8 +303,9 @@ namespace TechnicalTest.Helpers
                     loggedDate.InnerText = row.LoggedDate.ToString(CultureInfo.CurrentCulture);
                     tr.AppendChild(loggedDate);
                 }
-
-                tbody.AppendChild(tr);
+                
+                    tbody.AppendChild(tr);
+                
             }
         }
         private static HtmlElement RefreshItemTableData(HtmlDocument currentDocument, List<Item> items)

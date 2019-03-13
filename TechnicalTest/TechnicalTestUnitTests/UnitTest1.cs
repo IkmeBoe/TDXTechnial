@@ -1,11 +1,13 @@
-﻿using System;
+﻿using FluentAssertions;
+using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
-using NUnit.Framework;
+using TechnicalTest.Enums;
 using TechnicalTest.FileLoad;
 using TechnicalTest.Helpers;
 using TechnicalTest.Interface;
+using TechnicalTest.Inventory;
 
 namespace TechnicalTestUnitTests
 {
@@ -14,45 +16,26 @@ namespace TechnicalTestUnitTests
     {
         private ILog _log;
         private FileHelper _fileHelper;
-
+        private DbHelper _dbHelper;
 
         [SetUp]
         public void SetUp()
         {
             _log = new FakeLog();
             _fileHelper = new FileHelper();
-
+            _dbHelper = new DbHelper(null);
         }
-        [TestCase()]
-        public void TestMethod1()
-        {
-            FileValidation fileValidation = new FileValidation(_log, "");
-
-            var validRow = new List<string>
-            {
-                "1291e565-9543-e911-9e01-58fb84cf12b8,legobrick,plate,1,10/03/2019,22.00"
-            };
-
-            LoadedFile file = new LoadedFile
-            {
-                Filename = "DummyFile.csv",
-                FileExtension = ".csv",
-                FileBytes = validRow.SelectMany(s => System.Text.Encoding.ASCII.GetBytes(s)).ToArray()
-
-
-        };
-            fileValidation.ValidateFile(file, _fileHelper).Should().BeTrue();
-        }
-
+       
         [TestCase]
         public void FileShouldBeValid()
         {
-           
+
             var file = _fileHelper.GetFile($@"{ AppDomain.CurrentDomain.BaseDirectory}\TestFiles\ValidFile1Row.csv");
             file.FileExtension.Should().Be("csv");
             file.Filename.Should().EndWith("ValidFile1Row.csv");
             file.FileBytes.Should().NotBeNullOrEmpty();
 
         }
+
     }
 }

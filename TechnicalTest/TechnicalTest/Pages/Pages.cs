@@ -38,7 +38,7 @@ namespace TechnicalTest.Pages
                     {
                         HtmlElement filePath = currentDocument.GetElementById("filepath");
 
-                        if (filePath != null && filePath?.InnerText != null)
+                        if (filePath != null && filePath.InnerText != null)
                         {
                             // File Ext and file name
                             var file = _fileHelper.GetFile(filePath.InnerText);
@@ -62,8 +62,11 @@ namespace TechnicalTest.Pages
                             else
                             {
                                 MessageBox.Show("Invalid File, Please see logs");
+                                filePath.InnerText = null;
                             }
+                          
                         }
+                        
                     }
                     break;
                 case "logfile":
