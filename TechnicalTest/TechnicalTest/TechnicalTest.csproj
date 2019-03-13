@@ -193,9 +193,6 @@
     <Content Include="Content\jquery.dataTables.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Html\items.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Html\uploadfile.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

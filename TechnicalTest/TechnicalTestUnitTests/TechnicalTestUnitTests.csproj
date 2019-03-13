@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestFiles\Test.csv" />
     <None Include="TestFiles\ValidFile1Row.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

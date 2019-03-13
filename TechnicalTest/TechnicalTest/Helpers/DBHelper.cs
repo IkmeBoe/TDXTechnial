@@ -5,6 +5,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
+using TechnicalTest.Inventory;
+
 namespace TechnicalTest.Helpers
 {
     internal class DbHelper
@@ -19,9 +21,9 @@ namespace TechnicalTest.Helpers
             }
 
         }
-        internal string AddFileToDatabase(string connectionString, string fileName, Byte[] file)
+
+        internal void AddFileToDatabase(string connectionString, string fileName, Byte[] file)
         {
-            string itemGuid = string.Empty;
             using (var connection = new SqlConnection(connectionString))
             {
                 using (var cmd = new SqlCommand("spStoreFileDetails", connection)
@@ -30,21 +32,44 @@ namespace TechnicalTest.Helpers
                 })
                 {
                     connection.Open();
+                   
                     cmd.Parameters.Add("@FileName", SqlDbType.NVarChar).Value = fileName.Split('\\').Last();
                     cmd.Parameters.Add("@FileStream", SqlDbType.VarBinary).Value = file;
                     cmd.Parameters.Add("@FileDate",SqlDbType.DateTime).Value = DateTime.Now;
                     cmd.Parameters.Add("@User", SqlDbType.NVarChar).Value = Environment.UserName;
-
-                    SqlParameter p = new SqlParameter("@itemGuid", SqlDbType.UniqueIdentifier);
-                    p.Direction = ParameterDirection.ReturnValue;
-
-                    cmd.Parameters.Add(p);
-                    itemGuid = (string) cmd.Parameters["@itemGuid"].Value;
-                     cmd.ExecuteNonQuery();
+                    
+                    cmd.ExecuteScalar();
+                    
+             
                 }
             }
+        }
 
-            return itemGuid;
+        internal void AddItemToDatabase(Item item, string filename)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var cmd = new SqlCommand("spStoreFileRows", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                })
+                {
+                    connection.Open();
+
+                    cmd.Parameters.Add("@PartId", SqlDbType.UniqueIdentifier).Value = item.PartId;
+                    cmd.Parameters.Add("@PartName", SqlDbType.NVarChar).Value = item.PartName;
+                    cmd.Parameters.Add("@PartType", SqlDbType.NVarChar).Value = item.PartType;
+                    cmd.Parameters.Add("@PartLength", SqlDbType.NVarChar).Value = item.PartLength;
+                    cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = item.Quantity;
+                    cmd.Parameters.Add("@DateAdded", SqlDbType.DateTime).Value = item.DateAdded;
+                    cmd.Parameters.Add("@Filename", SqlDbType.NVarChar).Value = filename;
+
+
+                    cmd.ExecuteNonQuery();
+
+
+                }
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace TechnicalTest.Navigation
         {
             try
             {
-                var url = baseDirectory + configuration.GetValue("WebOutput", typeof(string));
+                var url = baseDirectory + configuration.GetValue("StartPage", typeof(string));
                 return new Uri(url);
             }
             catch (Exception e)

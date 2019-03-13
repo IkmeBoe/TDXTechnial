@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE = edge" />
 
-    <title>TDX File Parser</title>
+    <title>default</title>
     <script src="../Scripts/jquery-3.0.0.js"></script>
     <script src="../Scripts/bootstrap.js"></script>
     <script src="../Scripts/jquery.dataTables.min.js"></script>
@@ -31,41 +31,13 @@
                 <a class="nav-link" href="uploadfile.html">Upload File</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="items.html">Results</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="logs.html">Logs</a>
             </li>
         </ul>
     </div>
 </nav>
 <div class="container" width="100%">
-
-    <form width="100%">
-        <br/>
-        
-            <h2 class="text-center">Load Inventory</h2>
-        <div class="input-group">
-            <span class="input-group-btn">
-                <span class="btn btn-primary" onclick="$(this).parent().find('input[type=file]').click();">Browse</span>
-                <input name="uploaded_file" onchange="$(this).parent().parent().find('.form-control').html($(this).val());" style="display: none;" type="file">
-            </span>
-            <span class="form-control" id="filepath"></span>
-            <button type="button" id="uploaded_file" class="btn btn-primary">Upload</button>
-        </div>
-
-    </form>
-    <br/>
-    <div class="card" style="width: 100%">
-        <div class="card-header" id="general">
-            <h4>Results</h4>
-        </div>
-        <div class="card-body">
-            <form>
-
-            </form>
-        </div>
-    </div>
+    <h1>File Parsing Demo</h1>
 </div>
 </body>
 </html>

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Forms;
 using TechnicalTest.Enums;
+using TechnicalTest.Inventory;
 using TechnicalTest.Log;
 
 namespace TechnicalTest.Helpers
@@ -32,7 +33,7 @@ namespace TechnicalTest.Helpers
 
             var currentTable = currentDocument.GetElementById("display");
 
-            var htmlTable2 = currentTable != null ? RefreshTableData(currentDocument, items) : BuildTableData(currentDocument, items);
+            var htmlTable2 = currentTable != null ? RefreshTableData(currentDocument, items) : BuildLogTableData(currentDocument, items);
 
             if (divContainer == null)
             {
@@ -47,7 +48,99 @@ namespace TechnicalTest.Helpers
             currentDocument.InvokeScript("Pagenation");
         }
 
-        private HtmlElement BuildTableData(HtmlDocument currentDocument, List<LogItem> items)
+        public void BuildItemTable(HtmlDocument currentDocument, List<Item> items)
+        {
+            var divContainer = currentDocument.GetElementById("container");
+
+            if (divContainer == null)
+            {
+                divContainer = CreateDivContainer(currentDocument);
+
+            }
+            else
+            {
+                divContainer.InnerText = "";
+            }
+
+            var currentTable = currentDocument.GetElementById("display");
+
+            var htmlTable2 = currentTable != null ? RefreshItemTableData(currentDocument, items) : BuildItemTableData(currentDocument, items);
+
+            if (divContainer == null)
+            {
+                return;
+            }
+            divContainer.AppendChild(htmlTable2);
+            if (currentDocument.Body != null)
+            {
+                currentDocument.Body.AppendChild(divContainer);
+            }
+
+            currentDocument.InvokeScript("Pagenation");
+        }
+
+        private HtmlElement BuildItemTableData(HtmlDocument currentDocument, List<Item> items)
+        {
+            var resultsTable = currentDocument.CreateElement("table");
+            var headerTr = currentDocument.CreateElement("tr");
+            var tbody = currentDocument.CreateElement("tbody");
+            if (resultsTable == null)
+            {
+                return null;
+            }
+            resultsTable.Id = "display";
+            resultsTable.SetAttribute("class", "table table-bordered table-sm");
+            resultsTable.SetAttribute("cellspacing", "0");
+            var thead = currentDocument.CreateElement("thead");
+
+            var columns = _dbHelper.GetDataFromDatabase<DbTableInformation>("sp_columns Items");
+
+
+            foreach (var column in columns)
+            {
+                if (column.Column_Name != "FileId" && column.Column_Name != "Id")
+                {
+                    var th = currentDocument.CreateElement("th");
+                    if (th == null)
+                    {
+                        continue;
+                    }
+
+                    th.InnerText = column.Column_Name;
+                    th.SetAttribute("class", "th-sm");
+                    th.SetAttribute("scope", "col");
+                    if (headerTr != null)
+                    {
+                        headerTr.AppendChild(th);
+                    }
+                }
+
+            }
+
+
+            if (thead != null)
+            {
+                if (headerTr != null)
+                {
+                    thead.AppendChild(headerTr);
+                }
+                resultsTable.AppendChild(thead);
+            }
+
+            if (tbody == null)
+            {
+                return resultsTable;
+            }
+
+            tbody.Id = "body";
+
+            BuildItemFileTableBody(currentDocument, items, tbody);
+            resultsTable.AppendChild(tbody);
+
+            return resultsTable;
+
+        }
+        private HtmlElement BuildLogTableData(HtmlDocument currentDocument, List<LogItem> items)
         {
             var resultsTable = currentDocument.CreateElement("table");
             var headerTr = currentDocument.CreateElement("tr");
@@ -63,14 +156,22 @@ namespace TechnicalTest.Helpers
 
             var columns = _dbHelper.GetDataFromDatabase<DbTableInformation>("sp_columns LogItems");
 
-            var th = currentDocument.CreateElement("th");
+            
             foreach (var column in columns)
             {
-                if (th == null) continue;
+                var th = currentDocument.CreateElement("th");
+                if (th == null)
+                {
+                    continue;
+                }
+
                 th.InnerText = column.Column_Name;
                 th.SetAttribute("class", "th-sm");
                 th.SetAttribute("scope", "col");
-                if (headerTr != null) headerTr.AppendChild(th);
+                if (headerTr != null)
+                {
+                    headerTr.AppendChild(th);
+                }
             }
 
 
@@ -95,6 +196,63 @@ namespace TechnicalTest.Helpers
 
             return resultsTable;
 
+        }
+
+        private static void BuildItemFileTableBody(HtmlDocument currentDocument, List<Item> items, HtmlElement tbody)
+        {
+            HtmlElement partId = currentDocument.CreateElement(ElementType.Td.ToString());
+            HtmlElement partName = currentDocument.CreateElement(ElementType.Td.ToString());
+            HtmlElement partType = currentDocument.CreateElement(ElementType.Td.ToString());
+            HtmlElement partLength = currentDocument.CreateElement(ElementType.Td.ToString());
+            HtmlElement quantity = currentDocument.CreateElement(ElementType.Td.ToString());
+            HtmlElement dateAdded = currentDocument.CreateElement(ElementType.Td.ToString());
+
+            foreach (var row in items)
+            {
+                var tr = currentDocument.CreateElement("tr");
+                if (tr == null)
+                {
+                    continue;
+                }
+                if (partId != null)
+                {
+                    partId.InnerText = row.PartId.ToString();
+                    tr.AppendChild(partId);
+                }
+
+                if (partName != null)
+                {
+                    partName.InnerText = row.PartName;
+                    tr.AppendChild(partName);
+                }
+
+                if (partType != null)
+                {
+                    partType.InnerText = row.PartType.ToString();
+                    tr.AppendChild(partType);
+                }
+
+                if (partLength != null)
+                {
+                    partLength.InnerText = row.PartLength.ToString();
+                    tr.AppendChild(partLength);
+                }
+
+                if (quantity != null)
+                {
+                    quantity.InnerText = row.Quantity.ToString();
+                    tr.AppendChild(quantity);
+                }
+
+                if (dateAdded != null)
+                {
+                    dateAdded.InnerText = row.DateAdded.ToString();
+                    tr.AppendChild(dateAdded);
+                }
+
+
+                tbody.AppendChild(tr);
+            }
         }
 
         private static void BuildLogFileTableBody(HtmlDocument currentDocument, List<LogItem> items, HtmlElement tbody)
@@ -140,11 +298,35 @@ namespace TechnicalTest.Helpers
                     loggedDate.InnerText = row.LoggedDate.ToString(CultureInfo.CurrentCulture);
                     tr.AppendChild(loggedDate);
                 }
-                
+
                 tbody.AppendChild(tr);
             }
         }
+        private static HtmlElement RefreshItemTableData(HtmlDocument currentDocument, List<Item> items)
+        {
+            var resultsTable = currentDocument.GetElementById("display");
 
+            var tbody = currentDocument.GetElementById("body");
+            if (tbody != null)
+            {
+                tbody.InnerHtml = "";
+            }
+            tbody = currentDocument.CreateElement("tbody");
+            if (tbody == null)
+            {
+                return resultsTable;
+            }
+            tbody.Id = "body";
+            BuildItemFileTableBody(currentDocument, items, tbody);
+            if (resultsTable != null)
+            {
+                resultsTable.AppendChild(tbody);
+
+                return resultsTable;
+            }
+
+            return null;
+        }
         private static HtmlElement RefreshTableData(HtmlDocument currentDocument, List<LogItem> items)
         {
             var resultsTable = currentDocument.GetElementById("display");

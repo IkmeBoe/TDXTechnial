@@ -1,6 +1,11 @@
 ﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Windows.Forms;
 using TechnicalTest.Enums;
 using TechnicalTest.Helpers;
 using TechnicalTest.Interface;
@@ -14,6 +19,7 @@ namespace TechnicalTest.FileLoad
     {
         ILog _log;
         private string _connectionString;
+        DbHelper _dbHelper = new DbHelper();
         public FileValidation()
         {
             _log = new Log.Log();
@@ -25,12 +31,11 @@ namespace TechnicalTest.FileLoad
             _connectionString = connectionString;
         }
         
-        internal bool ValidateFile(LoadedFile file, FileHelper fileHelper)
+        internal bool ValidateFile(LoadedFile file, FileHelper fileHelper, List<Item> validItems)
         {
-            bool isSuccessful = false;
             string[] fileLines = fileHelper.GetFileLines(file.FileBytes).ToArray();
             int maxNumberOfFieldsPerRow = typeof(Item).GetProperties().Length;
-            for (int line = 0; line < fileLines.Count(); line++)
+            for (int line = 1; line < fileLines.Count(); line++)
             {
                 var fields = fileLines[line].Split(',');
                 if (fields.Length != maxNumberOfFieldsPerRow)
@@ -45,48 +50,50 @@ namespace TechnicalTest.FileLoad
                     };
 
                     _log.InsertLog(_connectionString, failedItem);
+                    
+                    return false;
                 }
-                else
+
+                var item = new Item();
+                Guid.TryParse(fields[0], out var lineGuid);
+                Enum.TryParse<PartType>(fields[2], true, out var itemPart);
+
+                var validator = new ItemValidator();
+                item.PartId = lineGuid;
+                item.PartName = fields[1];
+                item.PartType = itemPart;
+                item.Quantity = int.Parse(fields[3]);
+                item.DateAdded = DateTime.Parse(fields[4]);
+                item.PartLength = double.Parse(fields[5]);
+                    
+                var results = validator.Validate(item);
+
+                if (!results.IsValid)
                 {
-                    var item = new Item();
-                    Guid.TryParse(fields[0], out var lineGuid);
-                    Enum.TryParse<PartType>(fields[2], true, out var itemPart);
-
-                    var validator = new ItemValidator();
-                    item.PartId = lineGuid;
-                    item.PartName = fields[1];
-                    item.PartType = itemPart;
-                    item.Quantity = int.Parse(fields[3]);
-                    item.DateAdded = DateTime.Parse(fields[4]);
-                    item.PartLength = double.Parse(fields[5]);
-
-                    var results = validator.Validate(item);
-
-                    if (!results.IsValid)
+                    foreach (var failure in results.Errors)
                     {
-                        foreach (var failure in results.Errors)
+                        LogItem failedItem = new LogItem
                         {
-                            LogItem failedItem = new LogItem
-                            {
-                                ErrorMessage = failure.ErrorMessage,
-                                Filename = file.Filename,
-                                LoggedDate = DateTime.Now,
-                                LogId = Guid.NewGuid(),
-                                RowNumber = line
-                            };
+                            ErrorMessage = failure.ErrorMessage,
+                            Filename = file.Filename,
+                            LoggedDate = DateTime.Now,
+                            LogId = Guid.NewGuid(),
+                            RowNumber = line
+                        };
 
-                            _log.InsertLog(_connectionString, failedItem);
-                        }
+                        _log.InsertLog(_connectionString, failedItem);
                     }
-                    else
-                    {
-                        isSuccessful = true;
-                    }
+
+                    return false;
                 }
+
+                validItems.Add(item);
 
             }
 
-            return isSuccessful;
+            return true;
         }
+
+        
     }
 }

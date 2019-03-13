@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Windows.Forms;
+using Dapper;
 using TechnicalTest.FileLoad;
 using TechnicalTest.Helpers;
 using TechnicalTest.Inventory;
@@ -35,23 +38,30 @@ namespace TechnicalTest.Pages
                     {
                         HtmlElement filePath = currentDocument.GetElementById("filepath");
 
-                        if (filePath != null)
+                        if (filePath != null && filePath?.InnerText != null)
                         {
                             // File Ext and file name
                             var file = _fileHelper.GetFile(filePath.InnerText);
-                            if (_fileValidation.ValidateFile(file, _fileHelper))
+                            List<Item> validItems = new List<Item>();
+                            if (_fileValidation.ValidateFile(file, _fileHelper, validItems))
                             {
-                                var returnedGuid = _dbHelper.AddFileToDatabase(_connectionString, $"{_fileHelper.GetFileName(filePath.InnerText)}", file.FileBytes);
+                                var fileName = file.Filename.Split('\\').Last();
+                                 _dbHelper.AddFileToDatabase(_connectionString, $"{_fileHelper.GetFileName(filePath.InnerText)}", file.FileBytes);
                                 filePath.InnerText = "";
 
                                 MessageBox.Show("File Successfully Uploaded");
 
-
-                                GetUploadedItems(currentDocument, file.Filename.Split('\\').Last());
+                                // GetFileId
+                                foreach (var item in validItems)
+                                {
+                                    _dbHelper.AddItemToDatabase(item, fileName);
+                                }
+                                
+                                DisplayLoadedItems(currentDocument);
                             }
                             else
                             {
-                                // message box and log error
+                                MessageBox.Show("Invalid File, Please see logs");
                             }
                         }
                     }
@@ -65,6 +75,14 @@ namespace TechnicalTest.Pages
                     break;
             }
         }
+
+        private void DisplayLoadedItems(HtmlDocument currentDocument)
+        {
+            List<Item> items = _dbHelper.GetDataFromDatabase<Item>("SELECT * FROM Items");
+
+            _htmlHelper.BuildItemTable(currentDocument, items);
+        }
+
 
         private void GetUploadedItems(HtmlDocument currentDocument, string filename)
         {
