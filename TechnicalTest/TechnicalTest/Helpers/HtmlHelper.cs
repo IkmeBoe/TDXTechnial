@@ -78,9 +78,10 @@ namespace TechnicalTest.Helpers
                 if (currentDocument.Body != null)
                 {
                     currentDocument.Body.AppendChild(divContainer);
+                    currentDocument.InvokeScript("Pagenation");
                 }
 
-                currentDocument.InvokeScript("Pagenation");
+                
             }
         }
 
@@ -137,9 +138,10 @@ namespace TechnicalTest.Helpers
                 return resultsTable;
             }
 
-            tbody.Id = "body";
+            
 
-            BuildItemFileTableBody(currentDocument, items, tbody);
+            tbody = BuildItemFileTableBody(currentDocument, items, tbody);
+            tbody.Id = "body";
             resultsTable.AppendChild(tbody);
 
             return resultsTable;
@@ -203,17 +205,19 @@ namespace TechnicalTest.Helpers
 
         }
 
-        private static void BuildItemFileTableBody(HtmlDocument currentDocument, List<Item> items, HtmlElement tbody)
+        private static HtmlElement BuildItemFileTableBody(HtmlDocument currentDocument, List<Item> items, HtmlElement tbody)
         {
-            HtmlElement partId = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement partName = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement partType = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement partLength = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement quantity = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement dateAdded = currentDocument.CreateElement(ElementType.Td.ToString());
+            
 
             foreach (var row in items)
             {
+                HtmlElement partId = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement partName = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement partType = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement partLength = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement quantity = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement dateAdded = currentDocument.CreateElement(ElementType.Td.ToString());
+
                 var tr = currentDocument.CreateElement("tr");
                 if (tr == null)
                 {
@@ -258,17 +262,21 @@ namespace TechnicalTest.Helpers
 
                 tbody.AppendChild(tr);
             }
+
+            return tbody;
         }
 
         private static void BuildLogFileTableBody(HtmlDocument currentDocument, List<LogItem> items, HtmlElement tbody)
         {
-            HtmlElement logId = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement errorMessage = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement fileName = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement rowNumber = currentDocument.CreateElement(ElementType.Td.ToString());
-            HtmlElement loggedDate = currentDocument.CreateElement(ElementType.Td.ToString());
+            
             foreach (var row in items)
             {
+                HtmlElement logId = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement errorMessage = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement fileName = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement rowNumber = currentDocument.CreateElement(ElementType.Td.ToString());
+                HtmlElement loggedDate = currentDocument.CreateElement(ElementType.Td.ToString());
+
                 var tr = currentDocument.CreateElement("tr");
                 if (tr == null)
                 {
@@ -322,8 +330,9 @@ namespace TechnicalTest.Helpers
             {
                 return resultsTable;
             }
+            
+            tbody = BuildItemFileTableBody(currentDocument, items, tbody);
             tbody.Id = "body";
-            BuildItemFileTableBody(currentDocument, items, tbody);
             if (resultsTable != null)
             {
                 resultsTable.AppendChild(tbody);

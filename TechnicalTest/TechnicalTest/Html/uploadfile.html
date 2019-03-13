@@ -35,22 +35,23 @@
         </ul>
     </div>
 </nav>
+<form width="100%">
+    <br/>
+    <label>
+        <h2 class="text-center">Upload File</h2></label>
+    <div class="input-group">
+        <span class="input-group-btn">
+            <span class="btn btn-primary" onclick="$(this).parent().find('input[type=file]').click();">Browse</span>
+            <input name="uploaded_file" onchange="$(this).parent().parent().find('.form-control').html($(this).val());" style="display: none;" type="file">
+        </span>
+        <span class="form-control" id="filepath"></span>
+        <button type="button" id="uploaded_file" class="btn btn-primary">Upload</button>
+    </div>
+
+</form>
 <div class="container" width="100%">
 
-    <form width="100%">
-        <br/>
-        <label>
-            <h2 class="text-center">Upload File</h2></label>
-        <div class="input-group">
-            <span class="input-group-btn">
-                <span class="btn btn-primary" onclick="$(this).parent().find('input[type=file]').click();">Browse</span>
-                <input name="uploaded_file" onchange="$(this).parent().parent().find('.form-control').html($(this).val());" style="display: none;" type="file">
-            </span>
-            <span class="form-control" id="filepath"></span>
-            <button type="button" id="uploaded_file" class="btn btn-primary">Upload</button>
-        </div>
-
-    </form>
+    
 </div>
 </body>
 </html>
